@@ -6,7 +6,7 @@ This repository hosts a `postman.json` file that allows you to quickly create a 
 
 Before getting started, please make sure you have the following prerequisite installed on your system:
 
-- [openapi-to-postman](https://github.com/postmanlabs/openapi-to-postman) command-line tool
+- [openapi-to-postmanv2](https://github.com/postmanlabs/openapi-to-postman) command-line tool
 
 ## Updating the Collection
 
