@@ -1,0 +1,41 @@
+name: Update Postman Collection
+
+on:
+  schedule:
+    - cron: '0 17 * * FRI'
+  workflow_dispatch:
+
+jobs:
+  update-openapi:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code
+      uses: actions/checkout@v3
+      
+    - name: Download OpenAPI file
+      run: curl -sSL -o openapi.yaml https://insulator.conductor.one/api/v1/openapi.yaml
+    
+    - name: Generate Postman collection
+      run: make generate
+
+    - name: Delete OpenAPI file
+      run: rm openapi.yaml
+
+    - name: Check for changes
+      id: git_diff
+      run: |
+        git diff
+        if [[ -n $(git diff --name-only) ]]; then
+          echo "::set-output name=has_changes::true"
+        fi
+
+    - name: Create Pull Request if changed
+      if: steps.git_diff.outputs.has_changes == 'true'
+      uses: peter-evans/create-pull-request@v3
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        commit-message: 'Update postman collection'
+        title: 'Update Postman collection'
+        body: 'This PR updates the regenerates the postman with the latest openapi.yaml'
+        branch: 'update-postman'
