@@ -14,7 +14,7 @@ jobs:
       uses: actions/checkout@v3
       
     - name: Download OpenAPI file
-      run: curl -sSL -o openapi.yaml https://insulator.conductor.one/api/v1/openapi.yaml
+      run: curl -sSL https://insulator.conductor.one/api/v1/openapi.yaml > openapi.yaml
     
     - name: Generate Postman collection
       run: make generate
