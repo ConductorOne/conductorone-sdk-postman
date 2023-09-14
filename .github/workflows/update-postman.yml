@@ -15,7 +15,10 @@ jobs:
       
     - name: Download OpenAPI file
       run: curl -sSL -o ./specs/openapi.yaml https://insulator.conductor.one/api/v1/openapi.yaml
-    
+      
+    - name: Install openapi-to-postmanv2
+      run: npm install -g openapi-to-postmanv2
+
     - name: Generate Postman collection
       run: make generate
 
