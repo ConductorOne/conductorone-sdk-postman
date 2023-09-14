@@ -14,13 +14,13 @@ jobs:
       uses: actions/checkout@v3
       
     - name: Download OpenAPI file
-      run: curl -sSL https://insulator.conductor.one/api/v1/openapi.yaml > openapi.yaml
-    
+      run: curl -sSL -o ./specs/openapi.yaml https://insulator.conductor.one/api/v1/openapi.yaml
+      
+    - name: Install openapi-to-postmanv2
+      run: npm install -g openapi-to-postmanv2
+
     - name: Generate Postman collection
       run: make generate
-
-    - name: Delete OpenAPI file
-      run: rm openapi.yaml
 
     - name: Check for changes
       id: git_diff
