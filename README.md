@@ -18,9 +18,9 @@ Please note that contributions and improvements to the API itself should be dire
 
 ## Authenticating your Postman requests with OAuth 2.0
 
-1. Navigate to the Authentication tab for your collection
+1. Navigate to the Authorization tab for your collection
 
-2. Select OAuth 2.0 as your authrization type
+2. Select OAuth 2.0 as your authorization type
 <img width="1054" alt="image" src="https://github.com/ConductorOne/conductorone-sdk-postman/assets/60042005/d51edbb4-dd6f-4ccb-882f-7e28d5342fb1">
 
 3. Configure the token: 
