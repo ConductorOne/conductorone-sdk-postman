@@ -296,8 +296,7 @@ components:
                 expanded:
                     description: List of related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -493,8 +492,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -512,8 +510,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -576,8 +573,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -595,8 +591,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -761,8 +756,7 @@ components:
                 expanded:
                     description: The expanded field.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -821,8 +815,7 @@ components:
                     readOnly: true
                     type: string
                 config:
-                    additionalProperties:
-                        oneOf: []
+                    additionalProperties: true
                     description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                     properties:
                         '@type':
@@ -951,8 +944,7 @@ components:
                     description: The catalogId field.
                     type: string
                 config:
-                    additionalProperties:
-                        oneOf: []
+                    additionalProperties: true
                     description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                     properties:
                         '@type':
@@ -981,8 +973,7 @@ components:
                 expanded:
                     description: The array of expanded items indicated by the request.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -1020,8 +1011,7 @@ components:
                 expanded:
                     description: The array of expanded items indicated by the request.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -1039,8 +1029,7 @@ components:
                 expanded:
                     description: List of serialized related objects
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -1124,8 +1113,7 @@ components:
                 expanded:
                     description: The array of expanded items indicated by the request.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -1236,8 +1224,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -1292,8 +1279,7 @@ components:
                 expanded:
                     description: List of related objects
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -1320,8 +1306,7 @@ components:
                 expanded:
                     description: List of related objects
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -1591,8 +1576,7 @@ components:
                 expanded:
                     description: List of related objects
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -1893,8 +1877,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -1926,8 +1909,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -1948,8 +1930,7 @@ components:
                          The server returns one page of results and the nextPageToken until all results are retreived.
                          To retrieve the next page, use the same request and append a pageToken field with the value of nextPageToken shown on the previous page.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -2162,6 +2143,20 @@ components:
             title: Update Roles Response
             type: object
             x-speakeasy-name-override: UpdateRolesResponse
+        c1.api.policy.v1.Accept:
+            description: This policy step indicates that a ticket should have an approved outcome. This is a terminal approval state and is used to explicitly define the end of approval steps.
+            nullable: true
+            title: Accept
+            type: object
+            x-speakeasy-name-override: Accept
+        c1.api.policy.v1.AcceptInstance:
+            description: |-
+                This policy step indicates that a ticket should have an approved outcome. This is a terminal approval state and is used to explicitly define the end of approval steps.
+                 The instance is just a marker for it being copied into an active policy.
+            nullable: true
+            title: Accept Instance
+            type: object
+            x-speakeasy-name-override: AcceptInstance
         c1.api.policy.v1.AppEntitlementReference:
             description: This object references an app entitlement's ID and AppID.
             properties:
@@ -2630,6 +2625,12 @@ components:
                 reassignTasksToDelegates:
                     description: A policy configuration option that allows for reassinging tasks to delgated users. This level of delegation referrs to the individual delegates users set on their account.
                     type: boolean
+                rules:
+                    description: The rules field.
+                    items:
+                        $ref: '#/components/schemas/c1.api.policy.v1.Policy.Rule'
+                    nullable: true
+                    type: array
                 systemBuiltin:
                     description: Whether this policy is a builtin system policy. Builtin system policies cannot be edited.
                     readOnly: true
@@ -2642,6 +2643,18 @@ components:
             type: object
             x-speakeasy-entity: Policy
             x-speakeasy-name-override: Policy
+        c1.api.policy.v1.Policy.Rule:
+            description: The Rule message.
+            properties:
+                condition:
+                    description: The condition field.
+                    type: string
+                policyKey:
+                    description: This is a reference to a list of policy steps from `policy_steps`
+                    type: string
+            title: Rule
+            type: object
+            x-speakeasy-name-override: Rule
         c1.api.policy.v1.PolicyInstance:
             description: A policy instance is an object that contains a reference to the policy it was created from, the currently executing step, the next steps, and the history of previously completed steps.
             properties:
@@ -2700,11 +2713,17 @@ components:
                 This message contains a oneof named step. Only a single field of the following list may be set at a time:
                   - approval
                   - provision
+                  - accept
+                  - reject
             properties:
+                accept:
+                    $ref: '#/components/schemas/c1.api.policy.v1.Accept'
                 approval:
                     $ref: '#/components/schemas/c1.api.policy.v1.Approval'
                 provision:
                     $ref: '#/components/schemas/c1.api.policy.v1.Provision'
+                reject:
+                    $ref: '#/components/schemas/c1.api.policy.v1.Reject'
             title: Policy Step
             type: object
             x-speakeasy-name-override: PolicyStep
@@ -2715,7 +2734,11 @@ components:
                 This message contains a oneof named instance. Only a single field of the following list may be set at a time:
                   - approval
                   - provision
+                  - accept
+                  - reject
             properties:
+                accept:
+                    $ref: '#/components/schemas/c1.api.policy.v1.AcceptInstance'
                 approval:
                     $ref: '#/components/schemas/c1.api.policy.v1.ApprovalInstance'
                 id:
@@ -2727,6 +2750,8 @@ components:
                     type: string
                 provision:
                     $ref: '#/components/schemas/c1.api.policy.v1.ProvisionInstance'
+                reject:
+                    $ref: '#/components/schemas/c1.api.policy.v1.RejectInstance'
                 state:
                     description: The state of the step, which is either active or done.
                     enum:
@@ -2887,6 +2912,20 @@ components:
             title: Reassigned By Error Action
             type: object
             x-speakeasy-name-override: ReassignedByErrorAction
+        c1.api.policy.v1.Reject:
+            description: This policy step indicates that a ticket should have a denied outcome. This is a terminal approval state and is used to explicitly define the end of approval steps.
+            nullable: true
+            title: Reject
+            type: object
+            x-speakeasy-name-override: Reject
+        c1.api.policy.v1.RejectInstance:
+            description: |-
+                This policy step indicates that a ticket should have a denied outcome. This is a terminal approval state and is used to explicitly define the end of approval steps.
+                 The instance is just a marker for it being copied into an active policy.
+            nullable: true
+            title: Reject Instance
+            type: object
+            x-speakeasy-name-override: RejectInstance
         c1.api.policy.v1.RestartAction:
             description: The restart action describes the outcome of policy steps for when the task was restarted. This can be applied to multiple steps since restart skips all pending next steps.
             nullable: true
@@ -3143,8 +3182,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -3164,8 +3202,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -3195,8 +3232,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -3220,6 +3256,36 @@ components:
             title: Request Catalog Management Service List Entitlements Per Catalog Response
             type: object
             x-speakeasy-name-override: RequestCatalogManagementServiceListEntitlementsPerCatalogResponse
+        c1.api.requestcatalog.v1.RequestCatalogManagementServiceListResponse:
+            description: The RequestCatalogManagementServiceListResponse message.
+            properties:
+                expanded:
+                    description: List of serialized related objects.
+                    items:
+                        additionalProperties: true
+                        description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+                        properties:
+                            '@type':
+                                description: The type of the serialized message.
+                                type: string
+                        type: object
+                    nullable: true
+                    type: array
+                list:
+                    description: The list of request catalogs.
+                    items:
+                        $ref: '#/components/schemas/c1.api.requestcatalog.v1.RequestCatalogView'
+                    nullable: true
+                    type: array
+                nextPageToken:
+                    description: |-
+                        The nextPageToken is shown for the next page if the number of results is larger than the max page size.
+                         The server returns one page of results and the nextPageToken until all results are retreived.
+                         To retrieve the next page, use the same request and append a pageToken field with the value of nextPageToken shown on the previous page.
+                    type: string
+            title: Request Catalog Management Service List Response
+            type: object
+            x-speakeasy-name-override: RequestCatalogManagementServiceListResponse
         c1.api.requestcatalog.v1.RequestCatalogManagementServiceRemoveAccessEntitlementsRequestInput:
             description: |-
                 The RequestCatalogManagementServiceRemoveAccessEntitlementsRequest message is used to remove access entitlements from a request catalog.
@@ -3312,8 +3378,7 @@ components:
                 expanded:
                     description: The list of results containing up to X results, where X is the page size defined in the request.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -3520,8 +3585,7 @@ components:
                 annotations:
                     description: An array of `google.protobuf.Any` annotations with various base64-encoded data.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -3642,8 +3706,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -3680,8 +3743,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -3715,8 +3777,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -4016,8 +4077,7 @@ components:
                 expanded:
                     description: The list of results containing up to X results, where X is the page size defined in the request.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -4047,8 +4107,7 @@ components:
                 expanded:
                     description: The expanded field.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -4105,8 +4164,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -4154,8 +4212,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -4175,8 +4232,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -4439,8 +4495,7 @@ components:
                 expanded:
                     description: List of related objects
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -4639,8 +4694,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -4660,8 +4714,7 @@ components:
                 expanded:
                     description: List of serialized related objects.
                     items:
-                        additionalProperties:
-                            oneOf: []
+                        additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
                         properties:
                             '@type':
@@ -6180,6 +6233,21 @@ paths:
             x-speakeasy-group: Auth
             x-speakeasy-name-override: Introspect
     /api/v1/catalogs:
+        get:
+            description: Get a list of request catalogs.
+            operationId: c1.api.requestcatalog.v1.RequestCatalogManagementService.List
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/c1.api.requestcatalog.v1.RequestCatalogManagementServiceListResponse'
+                    description: Successful response
+            summary: List
+            tags:
+                - Request Catalog
+            x-speakeasy-group: RequestCatalogManagement
+            x-speakeasy-name-override: List
         post:
             description: Creates a new request catalog.
             operationId: c1.api.requestcatalog.v1.RequestCatalogManagementService.Create
