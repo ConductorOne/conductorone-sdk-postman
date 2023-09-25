@@ -16,6 +16,29 @@ To import the Postman collection into Postman:
 
 Please note that contributions and improvements to the API itself should be directed to the appropriate repositories.
 
+## Authenticating your Postman requests with OAuth 2.0
+
+1. Navigate to the Authentication tab for your collection
+
+2. Select OAuth 2.0 as your authrization type
+<img width="1054" alt="image" src="https://github.com/ConductorOne/conductorone-sdk-postman/assets/60042005/d51edbb4-dd6f-4ccb-882f-7e28d5342fb1">
+
+3. Configure the token: 
+
+
+   Access Token URL: https://{tenant_url}/auth/v1/token
+
+   
+   Client ID and Client Secret: [See here for how to obtain yours](https://api.conductorone.com/docs/conductorone-api/a76uioi122862-how-to-authenticate-requests)
+
+   
+   **Make sure you set Client Authentication to "Send credentials in body"**
+
+   <img width="593" alt="image" src="https://github.com/ConductorOne/conductorone-sdk-postman/assets/60042005/1bf69491-9cd0-4d37-bfaa-ea644cf2d6e1">
+
+
+   
+
 ## Regenerating from an `openapi.yaml`
 
 ### Prerequisites
