@@ -1,0 +1,32 @@
+name: Push to Postman Workspace
+
+on:
+  push:
+    branches:
+      - main  
+
+jobs:
+  push-to-postman:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+
+    - name: Push collection to Postman
+      env:
+        POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
+      run: |
+        COLLECTION_ID="28019073-4d760e4f-bc71-4265-bc05-38e0826aa661"
+        WORKSPACE_ID="b5a3f789-08e1-4f87-ab93-d6ef41f507d2"
+
+        # Read the collection JSON file into a variable
+        COLLECTION_JSON=$(cat postman.json)
+
+        # Use curl to push the collection to Postman
+        curl -X PUT "https://api.postman.com/collections/$COLLECTION_ID" \
+             -H "X-Api-Key: $POSTMAN_API_KEY" \
+             -H "Content-Type: application/json" \
+             -d "{
+                   \"collection\": $COLLECTION_JSON
+                 }"
