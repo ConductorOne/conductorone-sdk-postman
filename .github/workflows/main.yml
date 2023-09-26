@@ -4,14 +4,15 @@ on:
   push:
     branches:
       - main  # Replace with your branch if different
-
+    paths:
+      - 'postman.json'  # Replace with the actual path to your Postman collection JSON file
 jobs:
   push-to-postman:
     runs-on: ubuntu-latest
 
     steps:
     - name: Checkout code
-      uses: actions/checkout@v2
+      uses: actions/checkout@v4
 
     - name: Push collection to Postman
       env:
@@ -24,5 +25,5 @@ jobs:
              -H "X-Api-Key: $POSTMAN_API_KEY" \
              -H "Content-Type: application/json" \
              -d "{
-                   \"collection\": $(< ./path/to/your/collection.json)
+                   \"collection\": $(< postman.json)
                  }"
