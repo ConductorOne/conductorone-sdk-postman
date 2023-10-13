@@ -4623,6 +4623,18 @@ components:
                     nullable: true
                     readOnly: true
                     type: array
+                profile:
+                    additionalProperties:
+                        nullable: true
+                        type:
+                            - string
+                            - number
+                            - object
+                            - array
+                            - boolean
+                            - "null"
+                    readOnly: true
+                    type: object
                 roleIds:
                     description: A list of unique identifiers that maps to ConductorOne’s user roles let you assign users permissions tailored to the work they do in the software.
                     items:
