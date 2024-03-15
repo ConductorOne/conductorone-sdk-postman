@@ -35,6 +35,13 @@ components:
                     description: The AccountName of the app. For example, AWS is AccountID, Github is Org Name, and Okta is Okta Subdomain.
                     readOnly: true
                     type: string
+                appOwners:
+                    description: The owners of the app.
+                    items:
+                        $ref: '#/components/schemas/c1.api.user.v1.User'
+                    nullable: true
+                    readOnly: true
+                    type: array
                 certifyPolicyId:
                     description: The ID of the Certify Policy associated with this App.
                     type: string
@@ -66,6 +73,17 @@ components:
                     description: The ID of the app.
                     readOnly: true
                     type: string
+                identityMatching:
+                    description: The identityMatching field.
+                    enum:
+                        - APP_USER_IDENTITY_MATCHING_UNSPECIFIED
+                        - APP_USER_IDENTITY_MATCHING_STRICT
+                        - APP_USER_IDENTITY_MATCHING_DISPLAY_NAME
+                    type: string
+                isDirectory:
+                    description: Specifies if the app is a directory.
+                    readOnly: true
+                    type: boolean
                 logoUri:
                     description: The URL of a logo to display for the app.
                     readOnly: true
@@ -73,7 +91,7 @@ components:
                 monthlyCostUsd:
                     description: The cost of an app per-seat, so that total cost can be calculated by the grant count.
                     format: int32
-                    type: number
+                    type: integer
                 parentAppId:
                     description: The ID of the app that created this app, if any.
                     readOnly: true
@@ -172,6 +190,9 @@ components:
                     description: The unique ID for the App Entitlement.
                     readOnly: true
                     type: string
+                isManuallyManaged:
+                    description: Flag to indicate if the app entitlement is manually managed.
+                    type: boolean
                 provisionerPolicy:
                     $ref: '#/components/schemas/c1.api.policy.v1.ProvisionPolicy'
                 revokePolicyId:
@@ -183,6 +204,11 @@ components:
                 slug:
                     description: The slug is displayed as an oval next to the name in the frontend of C1, it tells you what permission the entitlement grants. See https://www.conductorone.com/docs/product/manage-access/entitlements/
                     type: string
+                sourceConnectorIds:
+                    additionalProperties:
+                        type: string
+                    description: Map to tell us which connector the entitlement came from.
+                    type: object
                 systemBuiltin:
                     description: This field indicates if this is a system builtin entitlement.
                     readOnly: true
@@ -190,6 +216,9 @@ components:
                 updatedAt:
                     format: date-time
                     readOnly: true
+                    type: string
+                userEditedMask:
+                    nullable: true
                     type: string
             title: App Entitlement
             type: object
@@ -268,15 +297,21 @@ components:
                 pageSize:
                     description: The pageSize where 0 <= pageSize <= 100. Values < 10 will be set to 10. A value of 0 returns the default page size (currently 25)
                     format: int32
-                    type: number
+                    type: integer
                 pageToken:
                     description: The pageToken field.
                     type: string
                 query:
                     description: Query the app entitlements with a fuzzy search on display name and description.
                     type: string
+                resourceIds:
+                    description: Search for app entitlements that belongs to these resources.
+                    items:
+                        type: string
+                    nullable: true
+                    type: array
                 resourceTypeIds:
-                    description: Search for app entitlements that are for items on these resource types.
+                    description: Search for app entitlements that are for items with resources types that have matching names. Example names are "group", "role", and "app".
                     items:
                         type: string
                     nullable: true
@@ -477,6 +512,12 @@ components:
                 id:
                     description: The id of the resource.
                     type: string
+                parentAppResourceId:
+                    description: The parent resource id, if this resource is a child of another resource.
+                    type: string
+                parentAppResourceTypeId:
+                    description: The parent resource type id, if this resource is a child of another resource.
+                    type: string
                 updatedAt:
                     format: date-time
                     readOnly: true
@@ -634,6 +675,12 @@ components:
                     type: string
                 appResource:
                     $ref: '#/components/schemas/c1.api.app.v1.AppResource'
+                parentResourcePath:
+                    description: JSONPATH expression indicating the location of the Parent Resource object in the array
+                    type: string
+                parentResourceTypePath:
+                    description: JSONPATH expression indicating the location of the Parent Resource Type object in the array
+                    type: string
                 resourceTypePath:
                     description: JSONPATH expression indicating the location of the Resource Type object in the array
                     type: string
@@ -652,14 +699,14 @@ components:
                 notifyAfterDays:
                     description: The duration in days after which we notify users of nonusage.
                     format: uint32
-                    type: number
+                    type: integer
                 revoke:
                     description: Whether or not to revoke a grant if they have access to the app, but has not used it within a configurable amount of time.
                     type: boolean
                 revokeAfterDays:
                     description: The duration in days after which we revoke users that have not used that grant.
                     format: uint32
-                    type: number
+                    type: integer
             title: App Usage Controls
             type: object
             x-speakeasy-name-override: AppUsageControls
@@ -694,6 +741,13 @@ components:
                     description: The email field of the application user.
                     readOnly: true
                     type: string
+                emails:
+                    description: The emails field of the application user.
+                    items:
+                        type: string
+                    nullable: true
+                    readOnly: true
+                    type: array
                 id:
                     description: A unique idenditfier of the application user.
                     readOnly: true
@@ -720,6 +774,17 @@ components:
                     format: date-time
                     readOnly: true
                     type: string
+                username:
+                    description: The username field of the application user.
+                    readOnly: true
+                    type: string
+                usernames:
+                    description: The usernames field of the application user.
+                    items:
+                        type: string
+                    nullable: true
+                    readOnly: true
+                    type: array
             title: App User
             type: object
             x-speakeasy-name-override: AppUser
@@ -1183,7 +1248,7 @@ components:
                 monthlyCostUsd:
                     description: Creates the app with this monthly cost per seat.
                     format: int32
-                    type: number
+                    type: integer
                 owners:
                     description: Creates the app with this array of owners.
                     items:
@@ -1216,6 +1281,16 @@ components:
             title: Delete App Response
             type: object
             x-speakeasy-name-override: DeleteAppResponse
+        c1.api.app.v1.ForceSyncRequestInput:
+            description: Signal the connector to start syncing. This puts the sync on the queue. It does not guarantee immediate sync. Long syncs still take minutes to hours.
+            title: Force Sync Request
+            type: object
+            x-speakeasy-name-override: ForceSyncRequest
+        c1.api.app.v1.ForceSyncResponse:
+            description: The ForceSyncResponse message.
+            title: Force Sync Response
+            type: object
+            x-speakeasy-name-override: ForceSyncResponse
         c1.api.app.v1.GetAppEntitlementResponse:
             description: The get app entitlement response returns an entitlement view containing paths in the expanded array for the objects expanded as indicated by the expand mask in the request.
             properties:
@@ -1433,6 +1508,12 @@ components:
                         type: string
                     nullable: true
                     type: array
+                appUserIds:
+                    description: A list of app user IDs to restrict the search by.
+                    items:
+                        type: string
+                    nullable: true
+                    type: array
                 excludeResourceTypeIds:
                     description: A list of resource type IDs to exclude from the search.
                     items:
@@ -1448,7 +1529,7 @@ components:
                 pageSize:
                     description: The pageSize where 10 <= pageSize <= 100, default 25.
                     format: int32
-                    type: number
+                    type: integer
                 pageToken:
                     description: The pageToken field.
                     type: string
@@ -1506,10 +1587,13 @@ components:
                         type: string
                     nullable: true
                     type: array
+                onlyDirectories:
+                    description: Only return apps which are directories
+                    type: boolean
                 pageSize:
                     description: The pageSize where 0 <= pageSize <= 100. Values < 10 will be set to 10. A value of 0 returns the default page size (currently 25)
                     format: int32
-                    type: number
+                    type: integer
                 pageToken:
                     description: The pageToken field.
                     type: string
@@ -1555,6 +1639,24 @@ components:
             title: Set App Entitlement Owners Response
             type: object
             x-speakeasy-name-override: SetAppEntitlementOwnersResponse
+        c1.api.app.v1.SetAppOwnersRequestInput:
+            description: The request message for setting the app owners.
+            properties:
+                userIds:
+                    description: The user_ids field for the users to set as an owner of the app.
+                    items:
+                        type: string
+                    nullable: true
+                    type: array
+            title: Set App Owners Request
+            type: object
+            x-speakeasy-entity: App_Owner
+            x-speakeasy-name-override: SetAppOwnersRequest
+        c1.api.app.v1.SetAppOwnersResponse:
+            description: The empty response message for setting the app owners.
+            title: Set App Owners Response
+            type: object
+            x-speakeasy-name-override: SetAppOwnersResponse
         c1.api.app.v1.UpdateAppEntitlementRequestInput:
             description: The UpdateAppEntitlementRequest message contains the app entitlement and the fields to be updated.
             properties:
@@ -1763,7 +1865,7 @@ components:
                 pageSize:
                     description: The pageSize where 0 <= pageSize <= 100. Values < 10 will be set to 10. A value of 0 returns the default page size (currently 25)
                     format: int32
-                    type: number
+                    type: integer
                 pageToken:
                     description: The pageToken field.
                     type: string
@@ -2175,26 +2277,21 @@ components:
             properties:
                 allowSelfApproval:
                     description: Configuration to allow self approval if the target user is a member of the group during this step.
-                    readOnly: true
                     type: boolean
                 appGroupId:
                     description: The ID of the group specified for approval.
-                    readOnly: true
                     type: string
                 appId:
-                    description: The ID of the app that conatins the group specified for approval.
-                    readOnly: true
+                    description: The ID of the app that contains the group specified for approval.
                     type: string
                 fallback:
                     description: Configuration to allow a fallback if the group is empty.
-                    readOnly: true
                     type: boolean
                 fallbackUserIds:
                     description: Configuration to specific which users to fallback to if fallback is enabled and the group is empty.
                     items:
                         type: string
                     nullable: true
-                    readOnly: true
                     type: array
             title: App Group Approval
             type: object
@@ -2205,7 +2302,6 @@ components:
             properties:
                 allowSelfApproval:
                     description: Configuration that allows a user to self approve if they are an app owner during this approval step.
-                    readOnly: true
                     type: boolean
             title: App Owner Approval
             type: object
@@ -2226,13 +2322,11 @@ components:
             properties:
                 allowReassignment:
                     description: Configuration to allow reassignment by reviewers during this step.
-                    readOnly: true
                     type: boolean
                 appOwners:
                     $ref: '#/components/schemas/c1.api.policy.v1.AppOwnerApproval'
                 assigned:
                     description: A field indicating whether this step is assigned.
-                    readOnly: true
                     type: boolean
                 entitlementOwners:
                     $ref: '#/components/schemas/c1.api.policy.v1.EntitlementOwnerApproval'
@@ -2244,11 +2338,9 @@ components:
                     $ref: '#/components/schemas/c1.api.policy.v1.ManagerApproval'
                 requireApprovalReason:
                     description: Configuration to require a reason when approving this step.
-                    readOnly: true
                     type: boolean
                 requireReassignmentReason:
                     description: Configuration to require a reason when reassigning this step.
-                    readOnly: true
                     type: boolean
                 self:
                     $ref: '#/components/schemas/c1.api.policy.v1.SelfApproval'
@@ -2409,6 +2501,9 @@ components:
                 entitlementId:
                     description: The ID of the entitlement we are delegating provisioning to.
                     type: string
+                implicit:
+                    description: If true, a binding will be automatically created from the entitlement of the parent app.
+                    type: boolean
             title: Delegated Provision
             type: object
             x-speakeasy-name-override: DelegatedProvision
@@ -2444,18 +2539,15 @@ components:
             properties:
                 allowSelfApproval:
                     description: Configuration to allow self approval if the target user is an entitlement owner during this step.
-                    readOnly: true
                     type: boolean
                 fallback:
                     description: Configuration to allow a fallback if the entitlement owner cannot be identified.
-                    readOnly: true
                     type: boolean
                 fallbackUserIds:
                     description: Configuration to specific which users to fallback to if fallback is enabled and the entitlement owner cannot be identified.
                     items:
                         type: string
                     nullable: true
-                    readOnly: true
                     type: array
             title: Entitlement Owner Approval
             type: object
@@ -2482,32 +2574,27 @@ components:
             properties:
                 allowSelfApproval:
                     description: Configuration to allow self approval of if the user is specified and also the target of the ticket.
-                    readOnly: true
                     type: boolean
                 assignedUserIds:
                     description: The assignedUserIds field.
                     items:
                         type: string
                     nullable: true
-                    readOnly: true
                     type: array
                 expressions:
                     description: Array of dynamic expressions to determine the approvers.  The first expression to return a non-empty list of users will be used.
                     items:
                         type: string
                     nullable: true
-                    readOnly: true
                     type: array
                 fallback:
                     description: Configuration to allow a fallback if the expression does not return a valid list of users.
-                    readOnly: true
                     type: boolean
                 fallbackUserIds:
                     description: Configuration to specific which users to fallback to if and the expression does not return a valid list of users.
                     items:
                         type: string
                     nullable: true
-                    readOnly: true
                     type: array
             title: Expression Approval
             type: object
@@ -2541,25 +2628,21 @@ components:
             properties:
                 allowSelfApproval:
                     description: Configuration to allow self approval if the target user is their own manager. This may occur if a service account has an identity user and manager specified as the same person.
-                    readOnly: true
                     type: boolean
                 assignedUserIds:
                     description: The array of users determined to be the manager during processing time.
                     items:
                         type: string
                     nullable: true
-                    readOnly: true
                     type: array
                 fallback:
                     description: Configuration to allow a fallback if no manager is found.
-                    readOnly: true
                     type: boolean
                 fallbackUserIds:
                     description: Configuration to specific which users to fallback to if fallback is enabled and no manager is found.
                     items:
                         type: string
                     nullable: true
-                    readOnly: true
                     type: array
             title: Manager Approval
             type: object
@@ -2580,6 +2663,40 @@ components:
             title: Manual Provision
             type: object
             x-speakeasy-name-override: ManualProvision
+        c1.api.policy.v1.Marker:
+            description: The Marker message.
+            properties:
+                endColumn:
+                    description: The endColumn field.
+                    format: int32
+                    type: integer
+                endLineNumber:
+                    description: The endLineNumber field.
+                    format: int32
+                    type: integer
+                message:
+                    description: The message field.
+                    type: string
+                severity:
+                    description: The severity field.
+                    enum:
+                        - UNKNOWN
+                        - HINT
+                        - INFO
+                        - WARNING
+                        - ERROR
+                    type: string
+                startColumn:
+                    description: The startColumn field.
+                    format: int32
+                    type: integer
+                startLineNumber:
+                    description: The startLineNumber field.
+                    format: int32
+                    type: integer
+            title: Marker
+            type: object
+            x-speakeasy-name-override: Marker
         c1.api.policy.v1.Policy:
             description: A policy describes the behavior of the ConductorOne system when processing a task. You can describe the type, approvers, fallback behavior, and escalation processes.
             properties:
@@ -2623,7 +2740,7 @@ components:
                     nullable: true
                     type: array
                 reassignTasksToDelegates:
-                    description: A policy configuration option that allows for reassinging tasks to delgated users. This level of delegation referrs to the individual delegates users set on their account.
+                    description: A policy configuration option that allows for reassinging tasks to delgated users. This level of delegation refers to the individual delegates users set on their account.
                     type: boolean
                 rules:
                     description: The rules field.
@@ -2954,7 +3071,7 @@ components:
                 pageSize:
                     description: The pageSize where 0 <= pageSize <= 100. Values < 10 will be set to 10. A value of 0 returns the default page size (currently 25)
                     format: int32
-                    type: number
+                    type: integer
                 pageToken:
                     description: The pageToken field.
                     type: string
@@ -2992,18 +3109,15 @@ components:
                     items:
                         type: string
                     nullable: true
-                    readOnly: true
                     type: array
                 fallback:
                     description: Configuration to allow a fallback if the identity user of the target app user cannot be determined.
-                    readOnly: true
                     type: boolean
                 fallbackUserIds:
                     description: Configuration to specific which users to fallback to if fallback is enabled and the identity user of the target app user cannot be determined.
                     items:
                         type: string
                     nullable: true
-                    readOnly: true
                     type: array
             title: Self Approval
             type: object
@@ -3033,18 +3147,37 @@ components:
             properties:
                 allowSelfApproval:
                     description: Configuration to allow self approval of if the user is specified and also the target of the ticket.
-                    readOnly: true
                     type: boolean
                 userIds:
                     description: Array of users configured for approval.
                     items:
                         type: string
                     nullable: true
-                    readOnly: true
                     type: array
             title: User Approval
             type: object
             x-speakeasy-name-override: UserApproval
+        c1.api.policy.v1.ValidatePolicyCELRequest:
+            description: The ValidatePolicyCELRequest message.
+            properties:
+                cel:
+                    description: The cel field.
+                    type: string
+            title: Validate Policy Cel Request
+            type: object
+            x-speakeasy-name-override: ValidatePolicyCELRequest
+        c1.api.policy.v1.ValidatePolicyCELResponse:
+            description: The ValidatePolicyCELResponse message.
+            properties:
+                markers:
+                    description: The markers field.
+                    items:
+                        $ref: '#/components/schemas/c1.api.policy.v1.Marker'
+                    nullable: true
+                    type: array
+            title: Validate Policy Cel Response
+            type: object
+            x-speakeasy-name-override: ValidatePolicyCELResponse
         c1.api.requestcatalog.v1.RequestCatalog:
             description: The RequestCatalog is used for managing which entitlements are requestable, and who can request them.
             properties:
@@ -3362,7 +3495,7 @@ components:
                 pageSize:
                     description: The pageSize where 0 <= pageSize <= 100. Values < 10 will be set to 10. A value of 0 returns the default page size (currently 25)
                     format: int32
-                    type: number
+                    type: integer
                 pageToken:
                     description: The pageToken field.
                     type: string
@@ -3376,7 +3509,7 @@ components:
             description: The RequestCatalogSearchServiceSearchEntitlementsResponse message contains a list of results and a nextPageToken if applicable.
             properties:
                 expanded:
-                    description: The list of results containing up to X results, where X is the page size defined in the request.
+                    description: List of serialized related objects.
                     items:
                         additionalProperties: true
                         description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
@@ -3388,7 +3521,7 @@ components:
                     nullable: true
                     type: array
                 list:
-                    description: List of serialized related objects.
+                    description: The list of results containing up to X results, where X is the page size defined in the request.
                     items:
                         $ref: '#/components/schemas/c1.api.app.v1.AppEntitlementWithUserBindings'
                     nullable: true
@@ -3528,6 +3661,60 @@ components:
             title: Facets
             type: object
             x-speakeasy-name-override: Facets
+        c1.api.settings.v1.AWSExternalID:
+            description: The AWSExternalID message.
+            properties:
+                externalId:
+                    description: The externalId field.
+                    type: string
+            title: Aws External Id
+            type: object
+            x-speakeasy-entity: AWS_EXTERNAL_ID
+            x-speakeasy-name-override: AWSExternalID
+        c1.api.settings.v1.GetAWSExternalIDResponse:
+            description: The GetAWSExternalIDResponse message.
+            properties:
+                awsExternalId:
+                    $ref: '#/components/schemas/c1.api.settings.v1.AWSExternalID'
+            title: Get Aws External Id Response
+            type: object
+            x-speakeasy-name-override: GetAWSExternalIDResponse
+        c1.api.settings.v1.GetSessionSettingsResponse:
+            description: The GetSessionSettingsResponse message.
+            properties:
+                sessionSettings:
+                    $ref: '#/components/schemas/c1.api.settings.v1.SessionSettings'
+            title: Get Session Settings Response
+            type: object
+            x-speakeasy-name-override: GetSessionSettingsResponse
+        c1.api.settings.v1.SessionSettings:
+            description: The SessionSettings message.
+            properties:
+                maxSessionLength:
+                    format: duration
+                    type: string
+            title: Session Settings
+            type: object
+            x-speakeasy-name-override: SessionSettings
+        c1.api.settings.v1.UpdateSessionSettingsRequest:
+            description: The UpdateSessionSettingsRequest message.
+            properties:
+                sessionSettings:
+                    $ref: '#/components/schemas/c1.api.settings.v1.SessionSettings'
+                updateMask:
+                    nullable: true
+                    type: string
+            title: Update Session Settings Request
+            type: object
+            x-speakeasy-name-override: UpdateSessionSettingsRequest
+        c1.api.settings.v1.UpdateSessionSettingsResponse:
+            description: The UpdateSessionSettingsResponse message.
+            properties:
+                sessionSettings:
+                    $ref: '#/components/schemas/c1.api.settings.v1.SessionSettings'
+            title: Update Session Settings Response
+            type: object
+            x-speakeasy-name-override: UpdateSessionSettingsResponse
         c1.api.task.v1.ExternalRef:
             description: A reference to an external source. This value is unused currently, but may be brought back.
             properties:
@@ -3574,6 +3761,8 @@ components:
                             - TASK_ACTION_TYPE_ESCALATE_TO_EMERGENCY_ACCESS
                             - TASK_ACTION_TYPE_CHANGE_POLICY
                             - TASK_ACTION_TYPE_RECALCULATE_DENIAL_FROM_BASE_POLICY_DECISIONS
+                            - TASK_ACTION_TYPE_SET_INSIGHTS_AND_RECOMMENDATION
+                            - TASK_ACTION_TYPE_SET_ANALYSIS_ID
                         type: string
                     nullable: true
                     readOnly: true
@@ -3600,7 +3789,7 @@ components:
                     description: The count of comments.
                     format: int32
                     readOnly: true
-                    type: number
+                    type: integer
                 createdAt:
                     format: date-time
                     readOnly: true
@@ -3636,6 +3825,12 @@ components:
                     description: The ID of the task.
                     readOnly: true
                     type: string
+                insightIds:
+                    description: The insightIds field.
+                    items:
+                        type: string
+                    nullable: true
+                    type: array
                 numericId:
                     description: A human-usable numeric ID of a task which can be included in place of the fully qualified task id in path parmeters (but not search queries).
                     format: int64
@@ -3655,6 +3850,14 @@ components:
                         - TASK_PROCESSING_TYPE_WAITING
                         - TASK_PROCESSING_TYPE_DONE
                     readOnly: true
+                    type: string
+                recommendation:
+                    description: The recommendation field.
+                    enum:
+                        - INSIGHT_RECOMMENDATION_UNSPECIFIED
+                        - INSIGHT_RECOMMENDATION_APPROVE
+                        - INSIGHT_RECOMMENDATION_DENY
+                        - INSIGHT_RECOMMENDATION_REVIEW
                     type: string
                 state:
                     description: The current state of the task as defined by the `state_enum`
@@ -3811,11 +4014,48 @@ components:
             title: Task Actions Service Escalate To Emergency Access Request
             type: object
             x-speakeasy-name-override: TaskActionsServiceEscalateToEmergencyAccessRequest
+        c1.api.task.v1.TaskActionsServiceRestartRequestInput:
+            description: The TaskActionsServiceRestartRequest object lets you restart a task.
+            properties:
+                comment:
+                    description: The comment attached to the request.
+                    type: string
+                expandMask:
+                    $ref: '#/components/schemas/c1.api.task.v1.TaskExpandMask'
+                policyStepId:
+                    description: The ID of the policy step on the given task to restart.
+                    type: string
+            title: Task Actions Service Restart Request
+            type: object
+            x-speakeasy-name-override: TaskActionsServiceRestartRequest
+        c1.api.task.v1.TaskActionsServiceRestartResponse:
+            description: The TaskActionsServiceRestartResponse message.
+            properties:
+                expanded:
+                    description: The expanded field.
+                    items:
+                        additionalProperties: true
+                        description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+                        properties:
+                            '@type':
+                                description: The type of the serialized message.
+                                type: string
+                        type: object
+                    nullable: true
+                    type: array
+                taskView:
+                    $ref: '#/components/schemas/c1.api.task.v1.TaskView'
+                ticketActionId:
+                    description: The ticketActionId field.
+                    type: string
+            title: Task Actions Service Restart Response
+            type: object
+            x-speakeasy-name-override: TaskActionsServiceRestartResponse
         c1.api.task.v1.TaskExpandMask:
             description: The task expand mask is an array of strings that specifes the related objects the requester wishes to have returned when making a request where the expand mask is part of the input. Use '*' to view all possible responses.
             properties:
                 paths:
-                    description: A list of paths to expand in the response. May be any combination of "*", "access_review_id", "user_id", "created_by_user_id", "app_id", "app_user_id", "app_entitlement_ids", "step_approver_ids", and "identity_user_id".
+                    description: A list of paths to expand in the response. May be any combination of "*", "access_review_id", "user_id", "created_by_user_id", "app_id", "app_user_id", "app_entitlement_ids", "step_approver_ids", "identity_user_id", and "insight_ids".
                     items:
                         type: string
                     nullable: true
@@ -3831,6 +4071,9 @@ components:
                     type: string
                 integrationId:
                     description: The integration id for the source of tickets.
+                    type: string
+                requestId:
+                    description: the request id for the grant ticket if the source is external
                     type: string
             title: Task Grant Source
             type: object
@@ -4009,6 +4252,9 @@ components:
                         type: string
                     nullable: true
                     type: array
+                olderThanDuration:
+                    format: duration
+                    type: string
                 openerIds:
                     description: Search tasks that were created by any of the users in this array.
                     items:
@@ -4018,7 +4264,7 @@ components:
                 pageSize:
                     description: The pageSize where 0 <= pageSize <= 100. Values < 10 will be set to 10. A value of 0 returns the default page size (currently 25)
                     format: int32
-                    type: number
+                    type: integer
                 pageToken:
                     description: The pageToken field.
                     type: string
@@ -4420,6 +4666,10 @@ components:
                     description: JSONPATH expression indicating the location of the User object of the User that this task is targeting in the expanded array. This is the user that is the identity when the target of a task is an app user.
                     readOnly: true
                     type: string
+                insightsPath:
+                    description: JSONPATH expression indicating the location of the Insights objects in the expanded array
+                    readOnly: true
+                    type: string
                 stepApproversPath:
                     description: JSONPATH expression indicating the location of the StepApproverUsers objects in the expanded array
                     readOnly: true
@@ -4456,7 +4706,7 @@ components:
                 pageSize:
                     description: The pageSize where 0 <= pageSize <= 100. Values < 10 will be set to 10. A value of 0 returns the default page size (currently 25)
                     format: int32
-                    type: number
+                    type: integer
                 pageToken:
                     description: The pageToken field.
                     type: string
@@ -4572,6 +4822,13 @@ components:
                     description: This is the user's email.
                     readOnly: true
                     type: string
+                emails:
+                    description: This is a list of all of the user's emails from app users.
+                    items:
+                        type: string
+                    nullable: true
+                    readOnly: true
+                    type: array
                 employmentStatus:
                     description: The users employment status.
                     readOnly: true
@@ -4653,6 +4910,17 @@ components:
                     format: date-time
                     readOnly: true
                     type: string
+                username:
+                    description: This is the user's primary username. Typically sourced from the primary directory.
+                    readOnly: true
+                    type: string
+                usernames:
+                    description: This is a list of all of the user's usernames from app users.
+                    items:
+                        type: string
+                    nullable: true
+                    readOnly: true
+                    type: array
             title: User
             type: object
             x-speakeasy-name-override: User
@@ -4774,6 +5042,145 @@ components:
             title: User View
             type: object
             x-speakeasy-name-override: UserView
+        c1.api.webhooks.v1.WebhookInstance:
+            description: The WebhookInstance message.
+            properties:
+                attempts:
+                    description: The attempts field.
+                    format: int32
+                    type: integer
+                completedAt:
+                    format: date-time
+                    readOnly: true
+                    type: string
+                createdAt:
+                    format: date-time
+                    readOnly: true
+                    type: string
+                expiresAt:
+                    format: date-time
+                    readOnly: true
+                    type: string
+                id:
+                    description: The id field.
+                    type: string
+                lastAttemptedAt:
+                    format: date-time
+                    readOnly: true
+                    type: string
+                source:
+                    $ref: '#/components/schemas/c1.api.webhooks.v1.WebhookSource'
+                spec:
+                    $ref: '#/components/schemas/c1.api.webhooks.v1.WebhookSpec'
+                state:
+                    description: The state field.
+                    enum:
+                        - WEBHOOK_STATE_UNSPECIFIED
+                        - WEBHOOK_STATE_PENDING
+                        - WEBHOOK_STATE_RUNNING
+                        - WEBHOOK_STATE_ERROR
+                        - WEBHOOK_STATE_WAITING_CALLBACK
+                        - WEBHOOK_STATE_PROCESS_RESPONSE
+                        - WEBHOOK_STATE_SUCCESS
+                        - WEBHOOK_STATE_FATAL_ERROR
+                    type: string
+                updatedAt:
+                    format: date-time
+                    readOnly: true
+                    type: string
+                webhookId:
+                    description: The webhookId field.
+                    type: string
+            title: Webhook Instance
+            type: object
+            x-speakeasy-name-override: WebhookInstance
+        c1.api.webhooks.v1.WebhookSource:
+            description: |
+                The WebhookSource message.
+
+                This message contains a oneof named source. Only a single field of the following list may be set at a time:
+                  - test
+                  - policyPostAction
+                  - approvalStep
+                  - provisionStep
+            properties:
+                approvalStep:
+                    $ref: '#/components/schemas/c1.api.webhooks.v1.WebhookSource.WebhookSourceApprovalStep'
+                policyPostAction:
+                    $ref: '#/components/schemas/c1.api.webhooks.v1.WebhookSource.WebhookSourcePolicyPostAction'
+                provisionStep:
+                    $ref: '#/components/schemas/c1.api.webhooks.v1.WebhookSource.WebhookSourceProvisionStep'
+                test:
+                    $ref: '#/components/schemas/c1.api.webhooks.v1.WebhookSource.WebhookSourceTest'
+            title: Webhook Source
+            type: object
+            x-speakeasy-name-override: WebhookSource
+        c1.api.webhooks.v1.WebhookSource.WebhookSourceApprovalStep:
+            description: The WebhookSourceApprovalStep message.
+            nullable: true
+            properties:
+                ticketId:
+                    description: The ticketId field.
+                    type: string
+            title: Webhook Source Approval Step
+            type: object
+            x-speakeasy-name-override: WebhookSourceApprovalStep
+        c1.api.webhooks.v1.WebhookSource.WebhookSourcePolicyPostAction:
+            description: The WebhookSourcePolicyPostAction message.
+            nullable: true
+            properties:
+                ticketId:
+                    description: The ticketId field.
+                    type: string
+            title: Webhook Source Policy Post Action
+            type: object
+            x-speakeasy-name-override: WebhookSourcePolicyPostAction
+        c1.api.webhooks.v1.WebhookSource.WebhookSourceProvisionStep:
+            description: The WebhookSourceProvisionStep message.
+            nullable: true
+            properties:
+                ticketId:
+                    description: The ticketId field.
+                    type: string
+            title: Webhook Source Provision Step
+            type: object
+            x-speakeasy-name-override: WebhookSourceProvisionStep
+        c1.api.webhooks.v1.WebhookSource.WebhookSourceTest:
+            description: The WebhookSourceTest message.
+            nullable: true
+            title: Webhook Source Test
+            type: object
+            x-speakeasy-name-override: WebhookSourceTest
+        c1.api.webhooks.v1.WebhookSpec:
+            description: The WebhookSpec message.
+            properties:
+                destination:
+                    description: The destination field.
+                    type: string
+                payload:
+                    additionalProperties: true
+                    description: Contains an arbitrary serialized message along with a @type that describes the type of the serialized message.
+                    properties:
+                        '@type':
+                            description: The type of the serialized message.
+                            type: string
+                    type: object
+            title: Webhook Spec
+            type: object
+            x-speakeasy-name-override: WebhookSpec
+        c1.api.webhooks.v1.WebhooksServiceTestRequestInput:
+            description: The WebhooksServiceTestRequest message.
+            title: Webhooks Service Test Request
+            type: object
+            x-speakeasy-name-override: WebhooksServiceTestRequest
+        c1.api.webhooks.v1.WebhooksServiceTestResponse:
+            description: The WebhooksServiceTestResponse message.
+            properties:
+                webhook:
+                    $ref: '#/components/schemas/c1.api.webhooks.v1.WebhookInstance'
+            title: Webhooks Service Test Response
+            type: object
+            x-speakeasy-name-override: WebhooksServiceTestResponse
     securitySchemes:
         bearerAuth:
             scheme: bearer
@@ -4804,7 +5211,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -4859,7 +5266,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -5015,6 +5422,40 @@ paths:
             x-speakeasy-entity-operation: ConnectorCredential#delete
             x-speakeasy-group: Connector
             x-speakeasy-name-override: RevokeCredential
+    /api/v1/apps/{app_id}/connectors/{connector_id}/force_sync:
+        post:
+            description: Invokes the c1.api.app.v1.ConnectorService.ForceSync method.
+            operationId: c1.api.app.v1.ConnectorService.ForceSync
+            parameters:
+                - in: path
+                  name: app_id
+                  required: true
+                  schema:
+                    description: The AppID of the app the connector is attached to.
+                    type: string
+                - in: path
+                  name: connector_id
+                  required: true
+                  schema:
+                    description: The ConnectorID of the connector that we are forcing to sync.
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/c1.api.app.v1.ForceSyncRequestInput'
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/c1.api.app.v1.ForceSyncResponse'
+                    description: Successful response
+            summary: Force Sync
+            tags:
+                - Connector
+            x-speakeasy-group: Connector
+            x-speakeasy-name-override: ForceSync
     /api/v1/apps/{app_id}/connectors/{id}:
         delete:
             description: Delete a connector.
@@ -5154,7 +5595,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -5194,7 +5635,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -5269,7 +5710,7 @@ paths:
                   schema:
                     description: The page_size field for pagination.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -5485,7 +5926,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -5525,7 +5966,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -5559,7 +6000,7 @@ paths:
                   schema:
                     description: The pageSize where 0 <= pageSize <= 100. Values < 10 will be set to 10. A value of 0 returns the default page size (currently 25)
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -5577,6 +6018,34 @@ paths:
                 - App Owner
             x-speakeasy-group: AppOwners
             x-speakeasy-name-override: List
+        put:
+            description: Sets the owners for a given app to the specified list of users.
+            operationId: c1.api.app.v1.AppOwners.Set
+            parameters:
+                - in: path
+                  name: app_id
+                  required: true
+                  schema:
+                    description: The app_id field for the app to set the owners of.
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/c1.api.app.v1.SetAppOwnersRequestInput'
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/c1.api.app.v1.SetAppOwnersResponse'
+                    description: The empty response message for setting the app owners.
+            summary: Set
+            tags:
+                - App Owner
+            x-speakeasy-entity-operation: App_Owner#create
+            x-speakeasy-group: AppOwners
+            x-speakeasy-name-override: Set
     /api/v1/apps/{app_id}/owners/{user_id}:
         delete:
             description: Removes an owner from an app.
@@ -5660,7 +6129,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -5721,7 +6190,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -5761,7 +6230,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -5873,7 +6342,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -6176,7 +6645,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -6210,7 +6679,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -6297,7 +6766,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -6445,7 +6914,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -6553,7 +7022,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -6674,7 +7143,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -6753,7 +7222,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -6873,6 +7342,27 @@ paths:
             x-speakeasy-entity-operation: Policy#update
             x-speakeasy-group: Policies
             x-speakeasy-name-override: Update
+    /api/v1/policies/validate/cel:
+        post:
+            description: Validate policies
+            operationId: c1.api.policy.v1.PolicyValidate.ValidateCEL
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/c1.api.policy.v1.ValidatePolicyCELRequest'
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/c1.api.policy.v1.ValidatePolicyCELResponse'
+                    description: Successful response
+            summary: Validate Cel
+            tags:
+                - Policy
+            x-speakeasy-group: PolicyValidate
+            x-speakeasy-name-override: ValidateCEL
     /api/v1/search/app_resource_types:
         post:
             description: Search app resources based on filters specified in the request body.
@@ -7041,6 +7531,59 @@ paths:
                 - User
             x-speakeasy-group: UserSearch
             x-speakeasy-name-override: Search
+    /api/v1/settings/aws-external-id:
+        get:
+            description: Invokes the c1.api.settings.v1.AWSExternalIDSettings.Get method.
+            operationId: c1.api.settings.v1.AWSExternalIDSettings.Get
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/c1.api.settings.v1.GetAWSExternalIDResponse'
+                    description: Successful response
+            summary: Get
+            tags:
+                - AWS External ID Settings
+            x-speakeasy-entity-operation: AWS_EXTERNAL_ID#read
+            x-speakeasy-group: AWSExternalIDSettings
+            x-speakeasy-name-override: Get
+    /api/v1/settings/session:
+        get:
+            description: Invokes the c1.api.settings.v1.SessionSettingsService.Get method.
+            operationId: c1.api.settings.v1.SessionSettingsService.Get
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/c1.api.settings.v1.GetSessionSettingsResponse'
+                    description: Successful response
+            summary: Get
+            tags:
+                - Session Settings
+            x-speakeasy-group: SessionSettings
+            x-speakeasy-name-override: Get
+        post:
+            description: Invokes the c1.api.settings.v1.SessionSettingsService.Update method.
+            operationId: c1.api.settings.v1.SessionSettingsService.Update
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/c1.api.settings.v1.UpdateSessionSettingsRequest'
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/c1.api.settings.v1.UpdateSessionSettingsResponse'
+                    description: Successful response
+            summary: Update
+            tags:
+                - Session Settings
+            x-speakeasy-group: SessionSettings
+            x-speakeasy-name-override: Update
     /api/v1/task/grant:
         post:
             description: Create a grant task
@@ -7218,6 +7761,34 @@ paths:
                 - Task
             x-speakeasy-group: TaskActions
             x-speakeasy-name-override: EscalateToEmergencyAccess
+    /api/v1/tasks/{task_id}/action/restart:
+        post:
+            description: Invokes the c1.api.task.v1.TaskActionsService.Restart method.
+            operationId: c1.api.task.v1.TaskActionsService.Restart
+            parameters:
+                - in: path
+                  name: task_id
+                  required: true
+                  schema:
+                    description: The ID of the task to restart.
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/c1.api.task.v1.TaskActionsServiceRestartRequestInput'
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/c1.api.task.v1.TaskActionsServiceRestartResponse'
+                    description: Successful response
+            summary: Restart
+            tags:
+                - Task
+            x-speakeasy-group: TaskActions
+            x-speakeasy-name-override: Restart
     /api/v1/users:
         get:
             description: List users.
@@ -7228,7 +7799,7 @@ paths:
                   schema:
                     description: The pageSize field.
                     format: int32
-                    type: number
+                    type: integer
                 - in: query
                   name: page_token
                   schema:
@@ -7269,6 +7840,34 @@ paths:
                 - User
             x-speakeasy-group: User
             x-speakeasy-name-override: Get
+    /api/v1/webhooks/{id}/test:
+        post:
+            description: Invokes the c1.api.webhooks.v1.WebhooksService.Test method.
+            operationId: c1.api.webhooks.v1.WebhooksService.Test
+            parameters:
+                - in: path
+                  name: id
+                  required: true
+                  schema:
+                    description: The id field.
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/c1.api.webhooks.v1.WebhooksServiceTestRequestInput'
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/c1.api.webhooks.v1.WebhooksServiceTestResponse'
+                    description: Successful response
+            summary: Test
+            tags:
+                - Webhooks
+            x-speakeasy-group: Webhooks
+            x-speakeasy-name-override: Test
 security:
     - bearerAuth: []
       oauth: []
