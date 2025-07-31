@@ -17,7 +17,7 @@ jobs:
       env:
         POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
       run: |
-        COLLECTION_ID="28019073-4d760e4f-bc71-4265-bc05-38e0826aa661"
+        COLLECTION_ID="25387698-f8154d6e-fd88-438e-87da-374a308b3906"
         
         # Create the request payload by wrapping the JSON file content
         echo '{"collection":' > /tmp/request.json
