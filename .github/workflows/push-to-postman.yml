@@ -3,9 +3,8 @@ name: Push to Postman Workspace
 on:
   push:
     branches:
-      - main  # Replace with your branch if different
-    paths:
-      - 'postman.json'  # Replace with the actual path to your Postman collection JSON file
+      - main
+
 jobs:
   push-to-postman:
     runs-on: ubuntu-latest
