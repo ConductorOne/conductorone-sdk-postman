@@ -14,16 +14,16 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v4
 
+    - name: Install Postman CLI
+      run: npm install -g @postman/cli
+
     - name: Push collection to Postman
       env:
         POSTMAN_API_KEY: ${{ secrets.POSTMAN_API_KEY }}
       run: |
         COLLECTION_ID="28019073-4d760e4f-bc71-4265-bc05-38e0826aa661"
-
-        # Use curl to push the collection to Postman
-        curl -X PUT "https://api.postman.com/collections/$COLLECTION_ID" \
-             -H "X-Api-Key: $POSTMAN_API_KEY" \
-             -H "Content-Type: application/json" \
-             -d "{
-                   \"collection\": $(< postman.json)
-                 }"
+        
+        # Use Postman CLI to update the collection
+        postman collection update $COLLECTION_ID \
+          --file postman.json \
+          --api-key $POSTMAN_API_KEY
