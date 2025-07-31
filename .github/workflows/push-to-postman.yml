@@ -19,8 +19,13 @@ jobs:
       run: |
         COLLECTION_ID="28019073-4d760e4f-bc71-4265-bc05-38e0826aa661"
         
-        jq -n --argfile collection postman.json '{"collection": $collection}' | \
+        # Create the request payload by wrapping the JSON file content
+        echo '{"collection":' > /tmp/request.json
+        cat postman.json >> /tmp/request.json
+        echo '}' >> /tmp/request.json
+
+        # Use curl to push the collection to Postman
         curl -X PUT "https://api.postman.com/collections/$COLLECTION_ID" \
              -H "X-Api-Key: $POSTMAN_API_KEY" \
              -H "Content-Type: application/json" \
-             -d @-
+             -d @/tmp/request.json
