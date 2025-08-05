@@ -1016,6 +1016,7 @@ components:
                             - APP_ENTITLEMENT_MEMBERSHIP_TYPE_EXCLUSION
                             - APP_ENTITLEMENT_MEMBERSHIP_TYPE_ADMIN
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -1032,6 +1033,13 @@ components:
                     description: The pageToken field.
                     readOnly: false
                     type: string
+                policyRefs:
+                    description: Search for app entitlements that use any of these policies.
+                    items:
+                        $ref: '#/components/schemas/c1.api.policy.v1.PolicyRef'
+                    nullable: true
+                    readOnly: false
+                    type: array
                 query:
                     description: Query the app entitlements with a fuzzy search on display name and description.
                     readOnly: false
@@ -2060,6 +2068,7 @@ components:
                             - APP_USER_DOMAIN_EXTERNAL
                             - APP_USER_DOMAIN_TRUSTED
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -2086,6 +2095,7 @@ components:
                             - STATUS_DISABLED
                             - STATUS_DELETED
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -2098,6 +2108,7 @@ components:
                             - APP_USER_TYPE_SERVICE_ACCOUNT
                             - APP_USER_TYPE_SYSTEM_ACCOUNT
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -3824,6 +3835,13 @@ components:
                     description: The pageToken field.
                     readOnly: false
                     type: string
+                policyRefs:
+                    description: Search for apps that use any of these policies.
+                    items:
+                        $ref: '#/components/schemas/c1.api.policy.v1.PolicyRef'
+                    nullable: true
+                    readOnly: false
+                    type: array
                 query:
                     description: Query the apps with a fuzzy search on display name and description.
                     readOnly: false
@@ -5544,6 +5562,7 @@ components:
                             - AUTOMATION_EXECUTION_STATE_TERMINATE
                             - AUTOMATION_EXECUTION_STATE_WAITING
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -5679,6 +5698,7 @@ components:
                             - TRIGGER_TYPE_GRANT_FOUND
                             - TRIGGER_TYPE_GRANT_DELETED
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -5790,6 +5810,7 @@ components:
                             - TASK_TYPE_REVOKE
                             - TASK_TYPE_REVIEW
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -5960,6 +5981,7 @@ components:
                             - APP_USER_TYPE_SERVICE_ACCOUNT
                             - APP_USER_TYPE_SYSTEM_ACCOUNT
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -8127,6 +8149,7 @@ components:
                             - POLICY_TYPE_ACCESS_REQUEST
                             - POLICY_TYPE_PROVISION
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -10239,7 +10262,9 @@ components:
                             - TASK_ACTION_TYPE_APPROVE_WITH_STEP_UP
                             - TASK_ACTION_TYPE_SKIP_STEP
                             - TASK_ACTION_TYPE_ROLLBACK_CANCELLED
+                            - TASK_ACTION_TYPE_UPDATE_REQUEST_DATA
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: true
                     type: array
@@ -10420,6 +10445,7 @@ components:
                         - TASK_ACTION_TYPE_APPROVE_WITH_STEP_UP
                         - TASK_ACTION_TYPE_SKIP_STEP
                         - TASK_ACTION_TYPE_ROLLBACK_CANCELLED
+                        - TASK_ACTION_TYPE_UPDATE_REQUEST_DATA
                     readOnly: false
                     type: string
                     x-speakeasy-unknown-values: allow
@@ -10861,6 +10887,18 @@ components:
             title: Task Actions Service Skip Step Request
             type: object
             x-speakeasy-name-override: TaskActionsServiceSkipStepRequest
+        c1.api.task.v1.TaskActionsServiceUpdateRequestDataRequestInput:
+            description: The TaskActionsServiceUpdateRequestDataRequest message.
+            properties:
+                data:
+                    additionalProperties: true
+                    readOnly: false
+                    type: object
+                expandMask:
+                    $ref: '#/components/schemas/c1.api.task.v1.TaskExpandMask'
+            title: Task Actions Service Update Request Data Request
+            type: object
+            x-speakeasy-name-override: TaskActionsServiceUpdateRequestDataRequest
         c1.api.task.v1.TaskAuditAccessRequestOutcome:
             description: The TaskAuditAccessRequestOutcome message.
             nullable: true
@@ -12075,6 +12113,7 @@ components:
                             - APP_USER_TYPE_SERVICE_ACCOUNT
                             - APP_USER_TYPE_SYSTEM_ACCOUNT
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -12261,6 +12300,7 @@ components:
                             - STEP_APPROVAL_TYPE_RESOURCE_OWNERS
                             - STEP_APPROVAL_TYPE_AGENT
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -12279,6 +12319,7 @@ components:
                             - TASK_STATE_OPEN
                             - TASK_STATE_CLOSED
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -12789,6 +12830,7 @@ components:
                             - USER_TYPE_SERVICE
                             - USER_TYPE_AGENT
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -12837,6 +12879,7 @@ components:
                             - DISABLED
                             - DELETED
                         type: string
+                        x-speakeasy-unknown-values: allow
                     nullable: true
                     readOnly: false
                     type: array
@@ -21191,6 +21234,35 @@ paths:
                 - Task
             x-speakeasy-group: TaskActions
             x-speakeasy-name-override: SkipStep
+    /api/v1/tasks/{task_id}/action/update-request-data:
+        post:
+            description: Invokes the c1.api.task.v1.TaskActionsService.UpdateRequestData method.
+            operationId: c1.api.task.v1.TaskActionsService.UpdateRequestData
+            parameters:
+                - in: path
+                  name: task_id
+                  required: true
+                  schema:
+                    description: The ID of the task containing the request data to update.
+                    readOnly: false
+                    type: string
+            requestBody:
+                content:
+                    application/json:
+                        schema:
+                            $ref: '#/components/schemas/c1.api.task.v1.TaskActionsServiceUpdateRequestDataRequestInput'
+            responses:
+                "200":
+                    content:
+                        application/json:
+                            schema:
+                                $ref: '#/components/schemas/c1.api.task.v1.TaskServiceActionResponse'
+                    description: Successful response
+            summary: Update Request Data
+            tags:
+                - Task
+            x-speakeasy-group: TaskActions
+            x-speakeasy-name-override: UpdateRequestData
     /api/v1/users:
         get:
             description: List users.
